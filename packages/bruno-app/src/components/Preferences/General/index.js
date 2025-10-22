@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 import path from 'utils/common/path';
 import { IconTrash } from '@tabler/icons';
+import { changeGlobalEnvironmentLocation } from 'providers/ReduxStore/slices/global-environments';
 
 const General = ({ close }) => {
   const preferences = useSelector((state) => state.app.preferences);
@@ -37,6 +38,7 @@ const General = ({ close }) => {
       .test('isValidTimeout', 'Request Timeout must be equal or greater than 0', (value) => {
         return value === undefined || Number(value) >= 0;
       }),
+    defaultCollectionLocation: Yup.string().max(1024),
     defaultCollectionLocation: Yup.string().max(1024)
   });
 
@@ -53,7 +55,8 @@ const General = ({ close }) => {
       timeout: preferences.request.timeout,
       storeCookies: get(preferences, 'request.storeCookies', true),
       sendCookies: get(preferences, 'request.sendCookies', true),
-      defaultCollectionLocation: get(preferences, 'general.defaultCollectionLocation', '')
+      defaultCollectionLocation: get(preferences, 'general.defaultCollectionLocation', ''),
+      defaultGlobalEnvironment: get(preferences, 'general.defaultGlobalEnvironment', '')
     },
     validationSchema: preferencesSchema,
     onSubmit: async (values) => {
@@ -84,12 +87,15 @@ const General = ({ close }) => {
           sendCookies: newPreferences.sendCookies
         },
         general: {
-          defaultCollectionLocation: newPreferences.defaultCollectionLocation
+          defaultCollectionLocation: newPreferences.defaultCollectionLocation,
+          defaultGlobalEnvironment: newPreferences.defaultGlobalEnvironment
         }
       }))
       .then(() => {
-        toast.success('Preferences saved successfully')
-        close();
+        dispatch(changeGlobalEnvironmentLocation({newLocation: newPreferences.defaultGlobalEnvironment})).then(() => {
+          toast.success('Preferences saved successfully')
+          close();
+        });
       })
       .catch((err) => console.log(err) && toast.error('Failed to update preferences'));
   };
@@ -114,6 +120,18 @@ const General = ({ close }) => {
       })
       .catch((error) => {
         formik.setFieldValue('defaultCollectionLocation', '');
+        console.error(error);
+      });
+  };
+  const browseDefaultGlobalEnvironmentLocation = () => {
+    dispatch(browseDirectory())
+      .then((dirPath) => {
+        if (typeof dirPath === 'string') {
+          formik.setFieldValue('defaultGlobalEnvironment', dirPath);
+        }
+      })
+      .catch((error) => {
+        formik.setFieldValue('defaultGlobalEnvironment', '');
         console.error(error);
       });
   };
@@ -278,6 +296,36 @@ const General = ({ close }) => {
         </div>
         {formik.touched.defaultCollectionLocation && formik.errors.defaultCollectionLocation ? (
           <div className="text-red-500">{formik.errors.defaultCollectionLocation}</div>
+        ) : null}
+
+        <div className="flex flex-col mt-6">
+          <label className="block select-none default-collection-location-label" htmlFor="defaultCollectionLocation">
+            Default Global Environment Location
+          </label>
+          <input
+            type="text"
+            name="defaultGlobalEnvironment"
+            className="block textbox mt-2 w-full cursor-pointer default-collection-location-input"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
+            onChange={formik.handleChange}
+            value={formik.values.defaultGlobalEnvironment || ''}
+            onClick={browseDefaultGlobalEnvironmentLocation}
+            placeholder="Click to browse for default location"
+          />
+          <div className="mt-1">
+            <span
+              className="text-link cursor-pointer hover:underline default-collection-location-browse"
+              onClick={browseDefaultGlobalEnvironmentLocation}
+            >
+              Browse
+            </span>
+          </div>
+        </div>
+        {formik.touched.defaultGlobalEnvironment && formik.errors.defaultGlobalEnvironment ? (
+          <div className="text-red-500">{formik.errors.defaultGlobalEnvironment}</div>
         ) : null}
         <div className="mt-10">
           <button type="submit" className="submit btn btn-sm btn-secondary">

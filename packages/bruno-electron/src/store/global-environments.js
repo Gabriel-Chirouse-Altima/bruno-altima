@@ -1,13 +1,27 @@
 const _ = require('lodash');
 const Store = require('electron-store');
 const { encryptStringSafe, decryptStringSafe } = require('../utils/encryption');
+const { getPreferences } = require('./preferences');
 
 class GlobalEnvironmentsStore {
   constructor() {
+    const location = getPreferences().general.defaultGlobalEnvironment || app.getPath('userData');
+
     this.store = new Store({
+      cwd: location,
       name: 'global-environments',
       clearInvalidConfig: true
     });
+  }
+
+  changeStoreLocation({ newLocation }) {
+    this.store = new Store({
+      cwd: newLocation || app.getPath('userData'),
+      name: 'global-environments',
+      clearInvalidConfig: true
+    });
+
+    return this.getGlobalEnvironments();
   }
 
   encryptGlobalEnvironmentVariables({ globalEnvironments }) {

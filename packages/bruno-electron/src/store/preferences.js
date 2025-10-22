@@ -48,7 +48,8 @@ const defaultPreferences = {
     hasLaunchedBefore: false
   },
   general: {
-    defaultCollectionLocation: ''
+    defaultCollectionLocation: '',
+    defaultGlobalEnvironment: ''
   }
 };
 
@@ -92,7 +93,8 @@ const preferencesSchema = Yup.object().shape({
     hasLaunchedBefore: Yup.boolean()
   }),
   general: Yup.object({
-    defaultCollectionLocation: Yup.string().max(1024).nullable()
+    defaultCollectionLocation: Yup.string().max(1024).nullable(),
+    defaultGlobalEnvironment: Yup.string().max(1024).nullable()
   })
 });
 

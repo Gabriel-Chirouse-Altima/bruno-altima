@@ -7,7 +7,6 @@ import importPostmanEnvironment from 'utils/importers/postman-environment';
 import { toastError } from 'utils/common/error';
 import { IconDatabaseImport } from '@tabler/icons';
 import { addGlobalEnvironment } from 'providers/ReduxStore/slices/global-environments';
-import { uuid } from 'utils/common/index';
 
 const ImportEnvironment = ({ onClose, onEnvironmentCreated }) => {
   const dispatch = useDispatch();

@@ -26,7 +26,8 @@ const initialState = {
       codeFont: 'default'
     },
     general: {
-      defaultCollectionLocation: ''
+      defaultCollectionLocation: '',
+      defaultGlobalEnvironment: ''
     }
   },
   generateCode: {
@@ -119,7 +120,6 @@ export const {
 export const savePreferences = (preferences) => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     const { ipcRenderer } = window;
-
     ipcRenderer
       .invoke('renderer:save-preferences', preferences)
       .then(() => dispatch(updatePreferences(preferences)))

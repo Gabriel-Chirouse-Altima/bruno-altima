@@ -3,7 +3,8 @@
   "lastOpenedCollections": ["{{projectRoot}}/tests/preferences/default-collection-location/collection"],
   "preferences": {
 		"general": {
-			"defaultCollectionLocation": "/tmp/bruno-collections"
+			"defaultCollectionLocation": "/tmp/bruno-collections",
+      "defaultGlobalEnvironment": ""
 		}
   }
 }

@@ -45,6 +45,14 @@ const registerGlobalEnvironmentsIpc = (mainWindow) => {
       return Promise.reject(error);
     }
   });
+
+  ipcMain.handle('renderer:change-global-environment-location', async (event, {newLocation}) => {
+    try {
+      return globalEnvironmentsStore.changeStoreLocation({newLocation});
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  });
 };
 
 module.exports = registerGlobalEnvironmentsIpc;

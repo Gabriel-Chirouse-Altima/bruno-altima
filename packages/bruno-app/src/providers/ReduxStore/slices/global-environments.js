@@ -87,6 +87,17 @@ export const {
   _deleteGlobalEnvironment
 } = globalEnvironmentsSlice.actions;
 
+export const changeGlobalEnvironmentLocation = ({ newLocation }) => (dispatch, getState) => {
+  return new Promise((resolve, reject) => {
+    const { ipcRenderer } = window;
+    ipcRenderer
+      .invoke('renderer:change-global-environment-location', { newLocation })
+      .then((globalEnvironments) => dispatch(updateGlobalEnvironments({globalEnvironments, activeGlobalEnvironmentUid: null})))
+      .then(resolve)
+      .catch(reject);
+  });
+};
+
 export const addGlobalEnvironment = ({ name, variables = [] }) => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     const uid = uuid();
