@@ -1,5 +1,5 @@
-const _ = require('lodash');
 const Store = require('electron-store');
+const { app } = require('electron');
 const { encryptStringSafe, decryptStringSafe } = require('../utils/encryption');
 const { getPreferences } = require('./preferences');
 
@@ -85,7 +85,7 @@ class GlobalEnvironmentsStore {
 
   addGlobalEnvironment({ uid, name, variables = [] }) {
     let globalEnvironments = this.getGlobalEnvironments();
-    const existingEnvironment = globalEnvironments.find(env => env?.name == name);
+    const existingEnvironment = globalEnvironments.find((env) => env?.name === name);
     if (existingEnvironment) {
       throw new Error('Environment with the same name already exists');
     }
@@ -99,8 +99,8 @@ class GlobalEnvironmentsStore {
 
   saveGlobalEnvironment({ environmentUid: globalEnvironmentUid, variables }) {
     let globalEnvironments = this.getGlobalEnvironments();
-    const environment = globalEnvironments.find(env => env?.uid == globalEnvironmentUid);
-    globalEnvironments = globalEnvironments.filter(env => env?.uid !== globalEnvironmentUid);
+    const environment = globalEnvironments.find((env) => env?.uid === globalEnvironmentUid);
+    globalEnvironments = globalEnvironments.filter((env) => env?.uid !== globalEnvironmentUid);
     if (environment) {
       environment.variables = variables;
     }
@@ -111,8 +111,8 @@ class GlobalEnvironmentsStore {
   
   renameGlobalEnvironment({ environmentUid: globalEnvironmentUid, name }) {
     let globalEnvironments = this.getGlobalEnvironments();
-    const environment = globalEnvironments.find(env => env?.uid == globalEnvironmentUid);
-    globalEnvironments = globalEnvironments.filter(env => env?.uid !== globalEnvironmentUid);
+    const environment = globalEnvironments.find((env) => env?.uid === globalEnvironmentUid);
+    globalEnvironments = globalEnvironments.filter((env) => env?.uid !== globalEnvironmentUid);
     if (environment) {
       environment.name = name;
     }
@@ -132,7 +132,7 @@ class GlobalEnvironmentsStore {
   
   selectGlobalEnvironment({ environmentUid: globalEnvironmentUid }) {
     let globalEnvironments = this.getGlobalEnvironments();
-    const environment = globalEnvironments.find(env => env?.uid == globalEnvironmentUid);
+    const environment = globalEnvironments.find((env) => env?.uid === globalEnvironmentUid);
     if (environment) {
       this.setActiveGlobalEnvironmentUid(globalEnvironmentUid);
     } else {
@@ -143,8 +143,8 @@ class GlobalEnvironmentsStore {
   deleteGlobalEnvironment({ environmentUid }) {
     let globalEnvironments = this.getGlobalEnvironments();
     let activeGlobalEnvironmentUid = this.getActiveGlobalEnvironmentUid();
-    globalEnvironments = globalEnvironments.filter(env => env?.uid !== environmentUid);
-    if (environmentUid == activeGlobalEnvironmentUid) {
+    globalEnvironments = globalEnvironments.filter((env) => env?.uid !== environmentUid);
+    if (environmentUid === activeGlobalEnvironmentUid) {
       this.setActiveGlobalEnvironmentUid(null); 
     }
     this.setGlobalEnvironments(globalEnvironments);
